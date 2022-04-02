@@ -15,7 +15,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-// Sorry voor de rommelige code, haast en clean gaatn iet altijd samen ;)
+// Sorry for messy code, fast and tidy coding isn't possible
 
 var placeOrders = [];	
 var accessToken;
@@ -56,7 +56,7 @@ const COLOR_MAPPINGS = {
 		duration: 10000
 	}).showToast();
 
-	setInterval(updateOrders, 5 * 60 * 1000); // Update orders elke vijf minuten.
+	setInterval(updateOrders, 5 * 60 * 1000); // update order every 5 minutes
 	await updateOrders();
 	attemptPlace();
 })();
@@ -67,12 +67,12 @@ async function attemptPlace() {
 		const canvasUrl = await getCurrentImageUrl();
 		ctx = await getCanvasFromUrl(canvasUrl);
 	} catch (e) {
-		console.warn('Fout bij ophalen map: ', e);
+		console.warn('error retrieving folder: ', e);
 		Toastify({
 			text: 'Error retrieving folder. Try again in 15 sec...',
 			duration: 10000
 		}).showToast();
-		setTimeout(attemptPlace, 15000); // probeer opnieuw in 15sec.
+		setTimeout(attemptPlace, 15000); // try again in 15 sec
 		return;
 	}
 
@@ -83,7 +83,7 @@ async function attemptPlace() {
 		const rgbaAtLocation = ctx.getImageData(x, y, 1, 1).data;
 		const hex = rgbToHex(rgbaAtLocation[0], rgbaAtLocation[1], rgbaAtLocation[2]);
 		const currentColorId = COLOR_MAPPINGS[hex];
-		// Deze pixel klopt al.
+		// This pixel is already correct.
 		if (currentColorId == colorId) continue;
 
 		Toastify({
@@ -97,7 +97,7 @@ async function attemptPlace() {
 			text: `Waiting for cooldown...`,
 			duration: 315000
 		}).showToast();
-		setTimeout(attemptPlace, 315000); // 5min en 15sec, just to be safe.
+		setTimeout(attemptPlace, 315000); // 5min and 15sec, just to be safe.
 		return;
 	}
 
@@ -105,12 +105,12 @@ async function attemptPlace() {
 		text: 'All pixels are already in the right place!',
 		duration: 10000
 	}).showToast();
-	setTimeout(attemptPlace, 30000); // probeer opnieuw in 30sec.
+	setTimeout(attemptPlace, 30000); // probeer opnieuw in 30sec. english: try again in 30 sec
 }
 
 function updateOrders() {
 	fetch('https://trafficconegod.github.io/Bot/orders.json').then(async (response) => {
-		if (!response.ok) return console.warn('Kan orders niet ophalen! (non-ok status code)');
+		if (!response.ok) return console.warn('failed to request orders! (non-ok status code)');
 		const data = await response.json();
 
 		if (JSON.stringify(data) !== JSON.stringify(placeOrders)) {
@@ -121,7 +121,7 @@ function updateOrders() {
 		}
 
 		placeOrders = data;
-	}).catch((e) => console.warn('Kan orders niet ophalen!', e));
+	}).catch((e) => console.warn('failed to request orders!', e));
 }
 
 function place(x, y, color) {
